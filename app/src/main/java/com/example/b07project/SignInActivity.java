@@ -16,6 +16,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class SignInActivity extends AppCompatActivity {
 
     DatabaseReference db;
@@ -27,9 +29,30 @@ public class SignInActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference();
     }
 
-    private boolean checkUsernameAndPassword(String username, String password) {
-        //TO DO
-        return false;
+    void noSuchUserAlert() {
+        Toast.makeText(this, "Username does not exist. Please try again.", Toast.LENGTH_LONG).show();
+    }
+
+    void wrongPasswordAlert() {
+        Toast.makeText(this, "Incorrect password. Please try again.", Toast.LENGTH_LONG).show();
+    }
+
+    void errorAlert() {
+        Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show();
+    }
+
+    void attemptSignIn(String username, String password, User user) {
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
+        Log.d("password verified", String.valueOf(result.verified));
+        if (result.verified) {
+            Toast.makeText(this, "Welcome back " + username + "!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra("username", username);
+            intent.putExtra("isAdmin", user.isAdmin());
+            startActivity(intent);
+        } else {
+            wrongPasswordAlert();
+        }
     }
 
     public void onClickSignIn(View signInButton) {
@@ -37,29 +60,21 @@ public class SignInActivity extends AppCompatActivity {
         EditText passwordTextBox = findViewById(R.id.passwordTextBox);
         String username = usernameTextBox.getText().toString();
         String password = passwordTextBox.getText().toString();
-        final boolean[] userExists = {false};
-        final boolean[] storedPassword = {false};
-        db.child("Users").child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        db.child("Users").child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    userExists[0] = false;
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                if (task.isSuccessful()) {
+                    User user = task.getResult().getValue(User.class);
+                    if (user != null) {
+                        attemptSignIn(username, password, user);
+                    } else {
+                        noSuchUserAlert();
+                    }
+                } else {
+                    errorAlert();
                 }
             }
         });
-        //Log.d("username", username);
-        //Log.d("password", password);
-        if (checkUsernameAndPassword(username, password)) {
-            Toast.makeText(this, "Welcome back " + username + "!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra("username", username);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Wrong username or password. Please try again.", Toast.LENGTH_LONG).show();
-        }
     }
 
     public void onClickSignUp(View signUpButton) {

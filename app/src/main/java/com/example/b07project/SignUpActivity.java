@@ -17,6 +17,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class SignUpActivity extends AppCompatActivity {
 
     DatabaseReference db;
@@ -28,36 +30,52 @@ public class SignUpActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference();
     }
 
-    private boolean checkUsername(String username) {
-        //TO DO
-        return true;
+    void invalidUsernamePasswordAlert() {
+        Toast.makeText(this, "Invalid username or password.", Toast.LENGTH_LONG).show();
     }
+
+    void usernameTakenAlert() {
+        Toast.makeText(this, "Username is taken. Please try another.", Toast.LENGTH_LONG).show();
+    }
+
+    void errorAlert() {
+        Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show();
+    }
+
+    void addUser(String username, String password, boolean isAdmin) {
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
+        User user = new User(hashedPassword, isAdmin);
+        db.child("Users").child(username).setValue(user);
+        Toast.makeText(this, "Account successfully created!", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickSignUp(View signUpButton) {
         EditText usernameTextBox = findViewById(R.id.usernameTextBox);
         EditText passwordTextBox = findViewById(R.id.passwordTextBox);
         Switch adminSwitch = findViewById(R.id.adminSwitch);
         String username = usernameTextBox.getText().toString();
         String password = passwordTextBox.getText().toString();
-        boolean admin = adminSwitch.isChecked();
-        final boolean[] userExists = {false};
-        db.child("Users").child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    userExists[0] = true;
+        boolean isAdmin = adminSwitch.isChecked();
+        if (username.length() > 0 && password.length() > 0) {
+            db.child("Users").child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        User user = task.getResult().getValue(User.class);
+                        if (user == null) {
+                            addUser(username, password, isAdmin);
+                        } else {
+                            usernameTakenAlert();
+                        }
+                    } else {
+                        errorAlert();
+                    }
                 }
-            }
-        });
-        //Log.d("username", username);
-        //Log.d("password", password);
-        if (!userExists[0]) {
-            Toast.makeText(this, "Account successfully created!", Toast.LENGTH_LONG).show();
-            db.child("User");
-            Intent intent = new Intent(this, SignInActivity.class);
-            startActivity(intent);
+            });
         } else {
-            Toast.makeText(this, "Username is taken. Please try another.", Toast.LENGTH_LONG).show();
+            invalidUsernamePasswordAlert();
         }
     }
 
