@@ -9,6 +9,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.LocalDateTime;
+
 public class HomeActivity extends AppCompatActivity {
 
     String username;
@@ -25,8 +27,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void onClickHello(View helloButton) {
-        DatabaseReference myRef = db.getReference("msg");
-        myRef.setValue("Hello World!");
+        DatabaseReference myRef = db.getReference("time");
+        LocalDateTime t = LocalDateTime.now();
+        myRef.setValue(t);
     }
 
 }

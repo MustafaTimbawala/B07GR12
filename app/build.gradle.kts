@@ -43,5 +43,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-database")
     implementation(group = "at.favre.lib", name = "bcrypt", version = "0.10.2")
-
+    implementation("androidx.fragment:fragment:1.6.2")
 }
