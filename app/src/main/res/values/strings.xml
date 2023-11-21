@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">B07Project</string>
+    <string name="database_link">https://b07project-e501d-default-rtdb.firebaseio.com/</string>
+</resources>
