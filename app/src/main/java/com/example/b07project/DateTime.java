@@ -53,12 +53,12 @@ public class DateTime implements Comparable<DateTime> {
         return minute;
     }
 
-    public String getMonthAsString() {
+    public String showMonthAsString() {
         Month m = Month.from(toLocalDateTime());
         return m.getDisplayName(TextStyle.FULL, Locale.CANADA);
     }
 
-    public String getDayAsString() {
+    public String showDayAsString() {
         DayOfWeek d = DayOfWeek.from(toLocalDateTime());
         return d.getDisplayName(TextStyle.FULL, Locale.CANADA);
     }
