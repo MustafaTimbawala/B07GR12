@@ -19,6 +19,8 @@ public class DateTime implements Comparable<DateTime> {
     private int hour;
     private int minute;
 
+    public DateTime() {} //need this to write to database
+
     public DateTime(int year, int month, int day, int hour, int minute) {
         this.year = year;
         this.month = month;
