@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="hyperlink_blue">#0000EE</color>
+    <color name="uoft_blue">#25355A</color>
 </resources>
