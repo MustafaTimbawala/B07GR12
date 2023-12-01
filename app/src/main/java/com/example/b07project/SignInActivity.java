@@ -48,7 +48,7 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Welcome back " + username + "!", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra("username", username);
-            intent.putExtra("isAdmin", user.isAdmin());
+            intent.putExtra("admin", user.isAdmin());
             startActivity(intent);
         } else {
             wrongPasswordAlert();

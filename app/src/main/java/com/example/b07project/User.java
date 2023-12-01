@@ -6,14 +6,14 @@ import java.util.List;
 public class User {
 
     private String password; //HASHED password
-    private boolean isAdmin;
+    private boolean admin;
     private List<String> events; //list of event names with NO duplicates
 
     public User() {} //need this to write to database
 
-    public User(String password, boolean isAdmin) {
+    public User(String password, boolean admin) {
         this.password = password;
-        this.isAdmin = isAdmin;
+        this.admin = admin;
         this.events = new ArrayList<String>();
     }
 
@@ -26,7 +26,7 @@ public class User {
     }
 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public boolean addEvent(String eventName) {

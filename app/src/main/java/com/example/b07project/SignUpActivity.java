@@ -42,9 +42,9 @@ public class SignUpActivity extends AppCompatActivity {
         Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show();
     }
 
-    void addUser(String username, String password, boolean isAdmin) {
+    void addUser(String username, String password, boolean admin) {
         String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
-        User user = new User(hashedPassword, isAdmin);
+        User user = new User(hashedPassword, admin);
         db.child("Users").child(username).setValue(user);
         Toast.makeText(this, "Account successfully created!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, SignInActivity.class);
@@ -57,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         Switch adminSwitch = findViewById(R.id.adminSwitch);
         String username = usernameTextBox.getText().toString();
         String password = passwordTextBox.getText().toString();
-        boolean isAdmin = adminSwitch.isChecked();
+        boolean admin = adminSwitch.isChecked();
         if (username.length() > 0 && password.length() > 0) {
             db.child("Users").child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -65,7 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         User user = task.getResult().getValue(User.class);
                         if (user == null) {
-                            addUser(username, password, isAdmin);
+                            addUser(username, password, admin);
                         } else {
                             usernameTakenAlert();
                         }
