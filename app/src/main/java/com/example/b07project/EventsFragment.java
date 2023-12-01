@@ -18,24 +18,26 @@ import android.widget.Button;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EventsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class EventsFragment extends Fragment {
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_ADMIN = "admin";
     private String username;
     private boolean admin;
-    private List<Event> events;
+    private List<Integer> eventIDsSortedByDate;
+    private Map<Integer, Event> IDToEvent;
     private DatabaseReference db;
     private EventsRecyclerViewAdapter adapter;
 
@@ -58,19 +60,16 @@ public class EventsFragment extends Fragment {
             username = args.getString(ARG_USERNAME);
             admin = args.getBoolean(ARG_ADMIN);
         }
-        events = new ArrayList<Event>();
+        eventIDsSortedByDate = new ArrayList<Integer>();
+        IDToEvent = new HashMap<Integer, Event>();
         db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference();
-        db.child("Events").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                        events.add(dataSnapshot.getValue(Event.class));
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
+    }
+
+    private class compareEventsByDate implements Comparator<Integer> {
+        @Override
+        public int compare(Integer id1, Integer id2) {
+            return IDToEvent.get(id1).getDate().compareTo(IDToEvent.get(id2).getDate());
+        }
     }
 
     @Override
@@ -93,10 +92,55 @@ public class EventsFragment extends Fragment {
             });
         }
         RecyclerView eventsRecyclerView = view.findViewById(R.id.eventsRecyclerView);
-        adapter = new EventsRecyclerViewAdapter(getContext(), events);
+        adapter = new EventsRecyclerViewAdapter(getContext(), this, username, admin, eventIDsSortedByDate, IDToEvent);
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        db.child("Events").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                eventIDsSortedByDate.clear();
+                IDToEvent.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    int id = Integer.parseInt(dataSnapshot.getKey());
+                    Event event = dataSnapshot.getValue(Event.class);
+                    eventIDsSortedByDate.add(id);
+                    IDToEvent.put(id, event);
+                }
+                eventIDsSortedByDate.sort(new compareEventsByDate());
+                Collections.reverse(eventIDsSortedByDate);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
         return view;
+    }
+
+    public void registerUser(int eventID) {
+        Event event = IDToEvent.get(eventID);
+        if (event.registerUser(username)) {
+            db.child("Events").child(String.valueOf(eventID)).setValue(event);
+        }
+    }
+
+    public void unregisterUser(int eventID) {
+        Event event = IDToEvent.get(eventID);
+        event.unregisterUser(username);
+        db.child("Events").child(String.valueOf(eventID)).setValue(event);
+    }
+
+    public void navToCreateFeedback(int eventID) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragment, CreateFeedbackFragment.newInstance(username, admin, eventID));
+        fragmentTransaction.commit();
+    }
+
+    public void navToViewFeedback(int eventID) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragment, ViewFeedbackFragment.newInstance(username, admin, eventID));
+        fragmentTransaction.commit();
     }
 
 }

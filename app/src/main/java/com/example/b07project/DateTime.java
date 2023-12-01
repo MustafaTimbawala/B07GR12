@@ -66,6 +66,15 @@ public class DateTime implements Comparable<DateTime> {
         return m.getDisplayName(TextStyle.FULL, Locale.CANADA);
     }
 
+    public static DateTime now() {
+        LocalDateTime dt = LocalDateTime.now();
+        return new DateTime(dt.getYear(),
+                            dt.getMonthValue(),
+                            dt.getDayOfMonth(),
+                            dt.getHour(),
+                            dt.getMinute());
+    }
+
     public int compareTo(DateTime other) {
         LocalDateTime myValue = this.toLocalDateTime();
         LocalDateTime otherValue = other.toLocalDateTime();

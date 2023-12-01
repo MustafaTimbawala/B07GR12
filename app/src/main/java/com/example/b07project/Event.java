@@ -10,7 +10,9 @@ public class Event {
     private int capacity;
     private List<String> registeredUsers;
 
-    public Event() {} //need this to write to database
+    public Event() { //need this to write to database
+        this.registeredUsers = new ArrayList<String>();
+    }
 
     public Event(String title, DateTime date, String description, int capacity) {
         this.title = title;
@@ -38,6 +40,18 @@ public class Event {
 
     public List<String> getRegisteredUsers() {
         return registeredUsers;
+    }
+
+    public boolean registerUser(String username) {
+        if (registeredUsers.size() < capacity) {
+            registeredUsers.add(username);
+            return true;
+        }
+        return false;
+    }
+
+    public void unregisterUser(String username) {
+        registeredUsers.remove(username);
     }
 
 }
