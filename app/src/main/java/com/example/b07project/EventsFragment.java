@@ -86,10 +86,12 @@ public class EventsFragment extends Fragment {
                 public void onClick(View view) {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.mainFragment, CreateEventFragment.newInstance(username, admin));
+                    fragmentTransaction.replace(R.id.mainFragment, CreateEventFragment.newInstance(username, admin, -1));
                     fragmentTransaction.commit();
                 }
             });
+
+
         }
         RecyclerView eventsRecyclerView = view.findViewById(R.id.eventsRecyclerView);
         adapter = new EventsRecyclerViewAdapter(getContext(), this, username, admin, eventIDsSortedByDate, IDToEvent);
@@ -142,5 +144,5 @@ public class EventsFragment extends Fragment {
         fragmentTransaction.replace(R.id.mainFragment, ViewFeedbackFragment.newInstance(username, admin, eventID));
         fragmentTransaction.commit();
     }
-
 }
+

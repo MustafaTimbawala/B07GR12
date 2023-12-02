@@ -18,8 +18,10 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,16 +32,19 @@ public class CreateEventFragment extends Fragment {
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_ADMIN = "admin";
+    private static final String ARG_EVENT_ID = "eventID";
     private String username;
     private boolean admin;
+    private int eventID = -1;
     private DatabaseReference db;
 
     public CreateEventFragment() {} //Required empty public constructor
-    public static CreateEventFragment newInstance(String username, boolean admin) {
+    public static CreateEventFragment newInstance(String username, boolean admin, int eventID) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USERNAME, username);
         args.putBoolean(ARG_ADMIN, admin);
+        args.putInt(ARG_EVENT_ID, eventID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +56,7 @@ public class CreateEventFragment extends Fragment {
         if (args != null) {
             username = args.getString(ARG_USERNAME);
             admin = args.getBoolean(ARG_ADMIN);
+            eventID = args.getInt(ARG_EVENT_ID, -1);
         }
         db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference();
     }
@@ -60,6 +66,39 @@ public class CreateEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_create_event, container, false);
+
+        EditText titleTextBox = view.findViewById(R.id.eventTitleTextBox);
+        EditText descriptionTextBox = view.findViewById(R.id.eventDescriptionTextBox);
+        EditText dateTextBox = view.findViewById(R.id.eventDateTextBox);
+        EditText timeTextBox = view.findViewById(R.id.eventTimeTextBox);
+        EditText capacityTextBox = view.findViewById(R.id.eventCapacityTextBox);
+
+        // If eventID is not -1, load the event data and populate the EditTexts
+        if(eventID != -1) {
+            db.child("Events").child(String.valueOf(eventID)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Event event = dataSnapshot.getValue(Event.class);
+                    if(event != null) {
+                        titleTextBox.setText(event.getTitle());
+                        descriptionTextBox.setText(event.getDescription());
+                        capacityTextBox.setText(String.valueOf(event.getCapacity()));
+                        DateTime dateTime = event.getDate();
+                        dateTextBox.setText(dateTime.getYear() + "/" + dateTime.getMonth() + "/" + dateTime.getDay());
+                        timeTextBox.setText(String.format("%02d:%02d", dateTime.getHour(), dateTime.getMinute()));
+
+                    }
+                }
+                // handle if attempt to read data from Firebase fails or is interrupted
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.w("DBError", "loadEvent:onCancelled", databaseError.toException());
+                }
+            });
+
+        }
+
         Button cancelButton = view.findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +113,7 @@ public class CreateEventFragment extends Fragment {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                createNewEvent();
-
+                createOrEditEvent();
             }
         });
 
@@ -102,7 +139,7 @@ public class CreateEventFragment extends Fragment {
         });
     }
 
-    private void createNewEvent() {
+    private void createOrEditEvent() {
         EditText titleTextBox = getView().findViewById(R.id.eventTitleTextBox);
         EditText descriptionTextBox = getView().findViewById(R.id.eventDescriptionTextBox);
         EditText dateTextBox = getView().findViewById(R.id.eventDateTextBox);
@@ -112,9 +149,11 @@ public class CreateEventFragment extends Fragment {
         String title = titleTextBox.getText().toString();
         String description = descriptionTextBox.getText().toString();
         int capacity = Integer.parseInt(capacityTextBox.getText().toString());
+
         String dateString = dateTextBox.getText().toString();
         String timeString = timeTextBox.getText().toString();
         String[] dateParts = dateString.split("/");
+        String[] timeParts = timeString.split(":");
 
         if (dateParts.length != 3) {
             showToast("Invalid date format");
@@ -131,7 +170,6 @@ public class CreateEventFragment extends Fragment {
             return;
         }
 
-        String[] timeParts = timeString.split(":");
         if (timeParts.length != 2) {
             showToast("Invalid time format");
             return;
@@ -153,8 +191,16 @@ public class CreateEventFragment extends Fragment {
         }
         DateTime dateTime = new DateTime(year, month, day, hour, minute);
         Event event = new Event(title, dateTime, description, capacity);
-        putEventInDatabase(event);
 
+        if(eventID != -1) {
+            db.child("Events").child(String.valueOf(eventID)).setValue(event);
+        } else {
+            putEventInDatabase(event);
+        }
+        navToEventsFragment();
+    }
+
+    private void navToEventsFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragment, EventsFragment.newInstance(username, admin));

@@ -26,8 +26,8 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
     private boolean admin;
     private List<Integer> eventIDsSortedByDate;
     private Map<Integer, Event> IDToEvent;
-    public DatabaseReference db;
 
+    public DatabaseReference db;
 
     public EventsRecyclerViewAdapter(Context context, EventsFragment fragment,
                                      String username, boolean admin,
@@ -84,7 +84,10 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
                 holder.mainButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Edit event logic goes here
+                        FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.mainFragment, CreateEventFragment.newInstance(username, admin, holder.eventID));
+                        fragmentTransaction.commit();
                     }
                 });
 
