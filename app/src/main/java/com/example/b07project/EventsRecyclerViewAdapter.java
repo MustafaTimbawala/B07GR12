@@ -8,7 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +26,8 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
     private boolean admin;
     private List<Integer> eventIDsSortedByDate;
     private Map<Integer, Event> IDToEvent;
+    private int eventID;
+    public DatabaseReference db;
 
 
     public EventsRecyclerViewAdapter(Context context, EventsFragment fragment,
@@ -33,6 +40,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         this.admin = admin;
         this.eventIDsSortedByDate = eventIDsSortedByDate;
         this.IDToEvent = IDToEvent;
+        db = FirebaseDatabase.getInstance("https://b07project-e501d-default-rtdb.firebaseio.com/").getReference();
     }
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
@@ -77,7 +85,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
                 holder.mainButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fragment.navToViewFeedback(holder.eventID); //Change to create event page
+                        //Edit event logic goes here
                     }
                 });
 
@@ -85,7 +93,11 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
                 holder.deleteEventButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fragment.navToViewFeedback(holder.eventID); //Change to create event page
+
+                        String eventId = String.valueOf(holder.eventID);
+
+                        db.child("Events").child(eventId).removeValue();
+
                     }
                 });
 
