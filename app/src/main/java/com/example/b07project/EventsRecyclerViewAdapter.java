@@ -22,6 +22,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
     private List<Integer> eventIDsSortedByDate;
     private Map<Integer, Event> IDToEvent;
 
+
     public EventsRecyclerViewAdapter(Context context, EventsFragment fragment,
                                      String username, boolean admin,
                                      List<Integer> eventIDsSortedByDate,
@@ -40,6 +41,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         public TextView eventDateText;
         public TextView eventDescriptionText;
         public Button mainButton;
+        public Button deleteEventButton;
 
         public EventViewHolder(@NonNull View itemView, EventsFragment fragment) {
             super(itemView);
@@ -47,6 +49,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
             eventDateText = itemView.findViewById(R.id.eventDateText);
             eventDescriptionText = itemView.findViewById(R.id.eventDescriptionText);
             mainButton = itemView.findViewById(R.id.mainButton);
+            deleteEventButton = itemView.findViewById(R.id.deleteEventButton);
         }
 
     }
@@ -68,13 +71,37 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         holder.eventDateText.setText(event.getDate().toString());
         holder.eventDescriptionText.setText(event.getDescription());
         if (admin) {
-            holder.mainButton.setText("View Feedback");
-            holder.mainButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fragment.navToViewFeedback(holder.eventID);
-                }
-            });
+
+            if (event.getDate().compareTo(DateTime.now()) > 0) { //event is in the future
+                holder.mainButton.setText("Edit");
+                holder.mainButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragment.navToViewFeedback(holder.eventID); //Change to create event page
+                    }
+                });
+
+                holder.deleteEventButton.setText("Delete");
+                holder.deleteEventButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragment.navToViewFeedback(holder.eventID); //Change to create event page
+                    }
+                });
+
+            } else {
+                holder.mainButton.setText("View Feedback");
+                holder.mainButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragment.navToViewFeedback(holder.eventID);
+                    }
+                });
+
+                holder.deleteEventButton.setVisibility(View.GONE);
+            }
+
+
         } else {
             boolean registered = event.getRegisteredUsers().contains(username);
             if (event.getDate().compareTo(DateTime.now()) > 0) { //event is in the future

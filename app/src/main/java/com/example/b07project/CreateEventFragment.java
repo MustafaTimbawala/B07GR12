@@ -74,9 +74,12 @@ public class CreateEventFragment extends Fragment {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 createNewEvent();
+
             }
         });
+
         return view;
     }
 
@@ -111,15 +114,14 @@ public class CreateEventFragment extends Fragment {
         int capacity = Integer.parseInt(capacityTextBox.getText().toString());
         String dateString = dateTextBox.getText().toString();
         String timeString = timeTextBox.getText().toString();
-
         String[] dateParts = dateString.split("/");
+
         if (dateParts.length != 3) {
             showToast("Invalid date format");
             return;
         }
 
         int year, month, day;
-
         try {
             year = Integer.parseInt(dateParts[0]);
             month = Integer.parseInt(dateParts[1]);
@@ -149,10 +151,13 @@ public class CreateEventFragment extends Fragment {
             showToast("Invalid date or time");
             return;
         }
-
         DateTime dateTime = new DateTime(year, month, day, hour, minute);
-
         Event event = new Event(title, dateTime, description, capacity);
         putEventInDatabase(event);
+        
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragment, EventsFragment.newInstance(username, admin));
+        fragmentTransaction.commit();
     }
 }
