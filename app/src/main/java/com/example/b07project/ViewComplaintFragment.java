@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,12 +62,23 @@ public class ViewComplaintFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_view_complaint, container, false);
+        view.findViewById(R.id.createComplaint).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainFragment, CreateComplaintFragment.newInstance(username, admin));
+                fragmentTransaction.commit();
+            }
+        });
         recyclerView = view.findViewById(R.id.recyclerView);
         complaintList = new ArrayList<>();
         adapter = new ComplaintAdapter(complaintList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         if (admin) {
+            view.findViewById(R.id.createComplaint).setVisibility(View.GONE);
             fetchComplaintsAdmin();
         } else{
             fetchComplaintsStudent();
