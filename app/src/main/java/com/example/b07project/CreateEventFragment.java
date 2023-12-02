@@ -154,7 +154,7 @@ public class CreateEventFragment extends Fragment {
         DateTime dateTime = new DateTime(year, month, day, hour, minute);
         Event event = new Event(title, dateTime, description, capacity);
         putEventInDatabase(event);
-        
+
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragment, EventsFragment.newInstance(username, admin));
