@@ -26,7 +26,6 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
     private boolean admin;
     private List<Integer> eventIDsSortedByDate;
     private Map<Integer, Event> IDToEvent;
-    private int eventID;
     public DatabaseReference db;
 
 
