@@ -1,0 +1,41 @@
+<!-- item_complaint.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/rectanglebox"
+    android:orientation="vertical"
+    android:padding="4dp"> <!-- Add margin to the bottom -->
+
+    <TextView
+        android:id="@+id/eventTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="eventTitle" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title" />
+
+    <TextView
+        android:id="@+id/announcer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Announcer" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date of Announcement" />
+
+    <TextView
+        android:id="@+id/announcement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Announcement" />
+
+</LinearLayout>

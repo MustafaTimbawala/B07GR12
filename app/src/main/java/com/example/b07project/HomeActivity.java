@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,9 +40,53 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        TextView pageTitle = findViewById(R.id.pageTitle);
+        //navigate to announcements
+        LinearLayout navToHome = findViewById(R.id.navToHome);
+        navToHome.setClickable(true);
+        navToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
+                fragmentTransaction.commit();
+                pageTitle.setText("Announcements");
+            }
+        });
+
+        //navigate to events
+        LinearLayout navToEvents = findViewById(R.id.navToEvents);
+        navToEvents.setClickable(true);
+        navToEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainFragment, EventsFragment.newInstance(username, admin));
+                fragmentTransaction.commit();
+                pageTitle.setText("Events");
+            }
+        });
+
+        //navigate to complaints
+        LinearLayout navToComplaints = findViewById(R.id.navToComplaints);
+        navToComplaints.setClickable(true);
+        navToComplaints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainFragment, ViewComplaintFragment.newInstance(username, admin));
+                fragmentTransaction.commit();
+                pageTitle.setText("Complaints");
+            }
+        });
+
+        //announcements page is the home page
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragment, EventsFragment.newInstance(username, admin));
+        fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
         fragmentTransaction.commit();
     }
 
