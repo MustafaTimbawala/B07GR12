@@ -89,7 +89,7 @@ public class ViewAnnouncementFragment extends Fragment {
     }
 
     private void fetchAnnouncementsAdmin() {
-        db.child("Announcements").orderByChild("Date").addValueEventListener(new ValueEventListener() {
+        db.orderByChild("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
