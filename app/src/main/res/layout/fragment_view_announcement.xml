@@ -36,10 +36,10 @@
     <Button
         android:id="@+id/createAnnouncement"
         android:layout_width="wrap_content"
+        android:backgroundTint="@color/uoft_blue"
         android:layout_height="wrap_content"
         android:text="Create Announcement!"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:backgroundTint="@color/uoft_blue"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
