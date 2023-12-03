@@ -11,73 +11,54 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/button_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="96dp"
-            android:text="submit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.289"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compInput" />
-
-        <TextView
-            android:id="@+id/compHead"
-            android:layout_width="298dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="36dp"
-            android:text="Submit Your Complaint"
-            android:textSize="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/compInput"
-            android:layout_width="300dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="72dp"
-            android:hint="Complaint"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:textSize="25dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compHead" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="90dp"
-            android:layout_height="47dp"
-            android:text="TextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.174"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compInput" />
+            <TextView
+                android:id="@+id/compHead"
+                android:layout_width="298dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:text="Submit Your Complaint"
+                android:textSize="25dp" />
 
-        <EditText
-            android:id="@+id/compTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:hint="Title"
-            app:layout_constraintBottom_toTopOf="@+id/compInput"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compHead"
-            app:layout_constraintVertical_bias="0.481" />
+            <EditText
+                android:id="@+id/compTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Title"
+                android:inputType="text" />
 
-        <Button
-            android:id="@+id/ToAnnounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="96dp"
-            android:hint="Announcements"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compInput" />
+            <EditText
+                android:id="@+id/compInput"
+                android:layout_width="297dp"
+                android:layout_height="173dp"
+                android:gravity="top"
+                android:hint="Complaint"
+                android:inputType="textMultiLine"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="90dp"
+                android:layout_height="47dp"
+                android:layout_marginTop="28dp"
+                android:text="TextView"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/button_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
