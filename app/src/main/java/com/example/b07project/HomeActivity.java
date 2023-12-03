@@ -98,11 +98,18 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.postCheckerButton) {
-                    //TO DO
+                    // Navigate to PostFragment
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainFragment, new PostFragment());
+                    fragmentTransaction.addToBackStack(null); // Optional, if you want back button to return to previous fragment
+                    fragmentTransaction.commit();
                     return true;
                 } else if (itemId == R.id.signOutButton) {
+                    // Sign out logic
                     Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
                     startActivity(intent);
+                    finish(); // Finish the current activity
                     return true;
                 }
                 return false;

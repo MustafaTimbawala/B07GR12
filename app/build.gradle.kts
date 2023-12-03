@@ -6,6 +6,9 @@ plugins {
 android {
     namespace = "com.example.b07project"
     compileSdk = 34
+    buildFeatures {
+        dataBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.b07project"
@@ -30,6 +33,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
