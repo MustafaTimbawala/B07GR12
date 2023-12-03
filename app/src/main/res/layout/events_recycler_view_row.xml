@@ -48,6 +48,15 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/eventDead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Deadline Passed"
+                android:textAlignment="center"
+                android:textColor="#9F0303"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
