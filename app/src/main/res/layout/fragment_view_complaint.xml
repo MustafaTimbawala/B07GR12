@@ -26,7 +26,7 @@
             android:layout_width="400dp"
             android:layout_height="516dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,17 +44,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/Announcements"
-        android:layout_width="407dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="50dp"
-        android:text="Complaints"
-        android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Complaints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

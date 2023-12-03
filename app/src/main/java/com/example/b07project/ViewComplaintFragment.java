@@ -1,6 +1,10 @@
 package com.example.b07project;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -8,12 +12,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ViewComplaintFragment extends Fragment {
 
@@ -87,22 +86,20 @@ public class ViewComplaintFragment extends Fragment {
     }
 
     private void fetchComplaintsStudent() {
-        db.child("Complaints").orderByChild("Name").equalTo(username).addValueEventListener(new ValueEventListener() {
+        db.orderByChild("Name").equalTo(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 complaintList.clear();
                 for (DataSnapshot datas : snapshot.getChildren()) {
-                    String usernames = datas.child("Name").getValue().toString();
-                    String titles = datas.child("Title").getValue().toString();
-                    String contents = datas.child("Content").getValue().toString();
-                    String dates = datas.child("Date").getValue().toString();
+                    String titles = Objects.requireNonNull(datas.child("Title").getValue()).toString();
+                    String contents = Objects.requireNonNull(datas.child("Content").getValue()).toString();
+                    String dates = Objects.requireNonNull(datas.child("Date").getValue()).toString();
 
                     Complaint complaint = new Complaint();
-                    complaint.setUsername("Username: " + usernames);
                     complaint.setTitle("Title: " + titles);
                     complaint.setContent("Complaint: " + contents);
                     complaint.setDate("Date: " + dates);
-
+                    complaint.setUsername("Name: " + username);
                     complaintList.add(0, complaint);
                 }
 
@@ -117,28 +114,25 @@ public class ViewComplaintFragment extends Fragment {
     }
 
     private void fetchComplaintsAdmin () {
-        db.child("Complaints").orderByChild("Name").equalTo(username).addValueEventListener(new ValueEventListener() {
+        db.orderByChild("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 complaintList.clear();
-                for (DataSnapshot datas : snapshot.getChildren()) {
-                    String usernames = datas.child("Name").getValue().toString();
-                    String titles = datas.child("Title").getValue().toString();
-                    String contents = datas.child("Content").getValue().toString();
-                    String dates = datas.child("Date").getValue().toString();
-
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    String contents = Objects.requireNonNull(data.child("Content").getValue()).toString();
+                    String dates = Objects.requireNonNull(data.child("Date").getValue()).toString();
+                    String names = Objects.requireNonNull(data.child("Name").getValue()).toString();
+                    String titles = Objects.requireNonNull(data.child("Title").getValue()).toString();
                     Complaint complaint = new Complaint();
-                    complaint.setUsername("Username: " + usernames);
+                    complaint.setUsername("Username: " + names);
                     complaint.setTitle("Title: " + titles);
                     complaint.setContent("Complaint: " + contents);
                     complaint.setDate("Date: " + dates);
 
                     complaintList.add(0, complaint);
                 }
-
                 adapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Firebase", "Error fetching complaints: " + error.getMessage());

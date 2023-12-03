@@ -109,8 +109,6 @@ public class ViewAnnouncementFragment extends Fragment {
                     announcement.setEventTitle("Event: " + eventTitles);
                     announcement.setEvent(isEvent);
                     announcementList.add(0, announcement);
-
-
                 }
 
                 adapter.notifyDataSetChanged();

@@ -96,10 +96,12 @@ public class CreateComplaintFragment extends Fragment {
                                     .setAction("Action", null).show();
                         }
                         else {
-                            myRef.child("Complaint" + (id + 1)).child("Title").setValue(title);
-                            myRef.child("Complaint" + (id + 1)).child("Content").setValue(content);
-                            myRef.child("Complaint" + (id + 1)).child("Date").setValue(finalMyObj.toString());
-                            myRef.child("Complaint" + (id + 1)).child("ID").setValue(id + 1);
+                            myRef.child("" + (id+1)).child("Title").setValue(title);
+                            myRef.child("" + (id+1)).child("Content").setValue(content);
+                            myRef.child("" + (id+1)).child("Date").setValue(finalMyObj.toString());
+                            myRef.child("" + (id+1)).child("ID").setValue(id + 1);
+                            myRef.child("" + (id+1 )).child("Name").setValue(username);
+
                         }
                     }
 

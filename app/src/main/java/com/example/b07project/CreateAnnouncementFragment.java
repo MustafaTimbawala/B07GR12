@@ -123,11 +123,14 @@ public class CreateAnnouncementFragment extends Fragment {
                                                     .setAction("Action", null).show();
                                         }
                                         else{
-                                            announceRef.child("Announcement" + (id+1)).child("Title").setValue(title);
-                                            announceRef.child("Announcement" + (id+1)).child("Event Name").setValue(eventName);
-                                            announceRef.child("Announcement" + (id+1)).child("Content").setValue(content);
-                                            announceRef.child("Announcement" + (id+1)).child("Date").setValue(finalMyObj.toString());
-                                            announceRef.child("Announcement" + (id+1)).child("ID").setValue(id+1);
+                                            boolean isEvent = true;
+                                            announceRef.child("Announcements" + (id+1)).child("Announcer").setValue(username);
+                                            announceRef.child("Announcements" + (id+1)).child("Content").setValue(content);
+                                            announceRef.child("Announcements" + (id+1)).child("Date").setValue(finalMyObj.toString());
+                                            announceRef.child("Announcements" + (id+1)).child("EventName").setValue(eventName);
+                                            announceRef.child("Announcements" + (id+1)).child("ID").setValue(id+1);
+                                            announceRef.child("Announcements" + (id+1)).child("Title").setValue(title);
+                                            announceRef.child("Announcements" + (id+1)).child("isEvent").setValue(isEvent);
                                         }
                                     }
 
@@ -145,11 +148,14 @@ public class CreateAnnouncementFragment extends Fragment {
                                         .setAction("Action", null).show();
                             }
                             else{
-                                announceRef.child("Announcement" + (id+1)).child("Title").setValue(title);
-                                announceRef.child("Announcement" + (id+1)).child("Content").setValue(content);
-                                announceRef.child("Announcement" + (id+1)).child("Event Name").setValue("");
-                                announceRef.child("Announcement" + (id+1)).child("Date").setValue(finalMyObj.toString());
-                                announceRef.child("Announcement" + (id+1)).child("ID").setValue(id+1);
+                                boolean isEvent = false;
+                                announceRef.child("Announcements" + (id+1)).child("Announcer").setValue(username);
+                                announceRef.child("Announcements" + (id+1)).child("Content").setValue(content);
+                                announceRef.child("Announcements" + (id+1)).child("Date").setValue(finalMyObj.toString());
+                                announceRef.child("Announcements" + (id+1)).child("EventName").setValue("");
+                                announceRef.child("Announcements" + (id+1)).child("ID").setValue(id+1);
+                                announceRef.child("Announcements" + (id+1)).child("Title").setValue(title);
+                                announceRef.child("Announcements" + (id+1)).child("isEvent").setValue(isEvent);
                             }
                         }
                     }
