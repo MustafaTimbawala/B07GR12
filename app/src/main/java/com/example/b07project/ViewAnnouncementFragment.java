@@ -33,7 +33,6 @@ public class ViewAnnouncementFragment extends Fragment {
     private DatabaseReference db;
     private List<Announcement> announcementList;
     private AnnouncementAdapter adapter;
-    private DatabaseReference eventRef;
 
     public ViewAnnouncementFragment() {} //Required empty public constructor
 
@@ -54,8 +53,8 @@ public class ViewAnnouncementFragment extends Fragment {
             username = args.getString(ARG_USERNAME);
             admin = args.getBoolean(ARG_ADMIN);
         }
-        db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference();
-        eventRef = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference("Events");
+        db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference("Announcements");
+
     }
 
     @Override
@@ -90,7 +89,7 @@ public class ViewAnnouncementFragment extends Fragment {
     }
 
     private void fetchAnnouncementsAdmin() {
-        db.child("Announcements").orderByChild("Date").addValueEventListener(new ValueEventListener() {
+        db.orderByChild("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
@@ -122,7 +121,7 @@ public class ViewAnnouncementFragment extends Fragment {
     }
 
     private void fetchAnnouncementsStudent() {
-        db.child("Announcements").orderByChild("Date").addValueEventListener(new ValueEventListener() {
+        db.orderByChild("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
@@ -144,28 +143,11 @@ public class ViewAnnouncementFragment extends Fragment {
                     if (!isEvent) {
                         announcementList.add(0, announcement);
                     }
-                    eventRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot info : snapshot.getChildren()) {
-                                for (DataSnapshot group : info.child("People").getChildren()) {
-                                    if (Objects.requireNonNull(group.getValue()).toString().equals(username)) {
-                                        announcementList.add(0, announcement);
-                                    }
-                                }
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+                    else {
+                        checkUserInEvent(announcement);
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-
-                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -175,4 +157,39 @@ public class ViewAnnouncementFragment extends Fragment {
         });
     }
 
+    private void checkUserInEvent(Announcement announcement) {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference("Events");
+        String eventTitle = announcement.getEventTitle().trim();
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot info : snapshot.getChildren()) {
+                    String eventInfo = Objects.requireNonNull(info.child("title").getValue()).toString().trim();
+                    String cleanedEventTitle = eventTitle.substring(7);
+
+                    if (cleanedEventTitle.equals(eventInfo)) {
+                        DataSnapshot peopleSnapshot = info.child("registeredUsers");
+
+                        for (DataSnapshot personSnapshot : peopleSnapshot.getChildren()) {
+                            String personName = personSnapshot.getValue(String.class);
+
+
+                            if (username.equals(personName)) {
+                                announcementList.add(0, announcement);
+                                adapter.notifyDataSetChanged();
+                                break;
+                            }
+                        }
+
+                        Log.d("TAG", "User is NOT in event");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Error checking user in event: " + error.getMessage());
+            }
+        });
+    }
 }

@@ -49,6 +49,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         public TextView eventDescriptionText;
         public Button mainButton;
         public Button deleteEventButton;
+        public TextView eventPassed;
 
         public EventViewHolder(@NonNull View itemView, EventsFragment fragment) {
             super(itemView);
@@ -57,6 +58,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
             eventDescriptionText = itemView.findViewById(R.id.eventDescriptionText);
             mainButton = itemView.findViewById(R.id.mainButton);
             deleteEventButton = itemView.findViewById(R.id.deleteEventButton);
+            eventPassed = itemView.findViewById(R.id.eventDead);
         }
 
     }
@@ -77,9 +79,16 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         holder.eventTitleText.setText(event.getTitle());
         holder.eventDateText.setText(event.getDate().toString());
         holder.eventDescriptionText.setText(event.getDescription());
-        if (admin) {
 
+        //fixes bug with buttons disappearing
+        holder.mainButton.setVisibility(View.VISIBLE);
+        holder.deleteEventButton.setVisibility(View.VISIBLE);
+        holder.eventPassed.setVisibility(View.VISIBLE);
+
+        if (admin) {
+            holder.eventPassed.setVisibility(View.GONE);
             if (event.getDate().compareTo(DateTime.now()) > 0) { //event is in the future
+
                 holder.mainButton.setText("Edit");
                 holder.mainButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -117,8 +126,10 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
 
 
         } else {
+            holder.deleteEventButton.setVisibility(View.GONE);
             boolean registered = event.getRegisteredUsers().contains(username);
             if (event.getDate().compareTo(DateTime.now()) > 0) { //event is in the future
+                holder.eventPassed.setVisibility(View.GONE);
                 if (!registered) {
                     holder.mainButton.setText("Register now!");
                     holder.mainButton.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +149,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
                 }
 
             } else if (registered) {
+                holder.eventPassed.setVisibility(View.GONE);
                 holder.mainButton.setText("Leave feedback!");
                 holder.mainButton.setOnClickListener(new View.OnClickListener() {
                     @Override

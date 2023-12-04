@@ -154,12 +154,11 @@ public class CreateEventFragment extends Fragment {
         String timeString = timeTextBox.getText().toString();
         String[] dateParts = dateString.split("/");
         String[] timeParts = timeString.split(":");
-
+        
         if (dateParts.length != 3) {
             showToast("Invalid date format");
             return;
         }
-
         int year, month, day;
         try {
             year = Integer.parseInt(dateParts[0]);
