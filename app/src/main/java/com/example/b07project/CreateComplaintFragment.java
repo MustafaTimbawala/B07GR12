@@ -89,6 +89,8 @@ public class CreateComplaintFragment extends Fragment {
                 }
                 else{
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        String title1 = compTitle.getText().toString();
+                        String content1 = compInput.getText().toString();
                         int id=0;
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -97,8 +99,8 @@ public class CreateComplaintFragment extends Fragment {
                             }
 
                             {
-                                myRef.child("" + (id+1)).child("Title").setValue(title);
-                                myRef.child("" + (id+1)).child("Content").setValue(content);
+                                myRef.child("" + (id+1)).child("Title").setValue(title1);
+                                myRef.child("" + (id+1)).child("Content").setValue(content1);
                                 myRef.child("" + (id+1)).child("Date").setValue(finalMyObj.toString());
                                 myRef.child("" + (id+1)).child("ID").setValue(id + 1);
                                 myRef.child("" + (id+1 )).child("Name").setValue(username);

@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class ViewAnnouncementFragment extends Fragment {
     private DatabaseReference scheduledEvents;
     private List<Announcement> announcementList;
     private AnnouncementAdapter adapter;
+    private RecyclerView recyclerView;
 
     private DateTime date;
 
@@ -79,41 +82,43 @@ public class ViewAnnouncementFragment extends Fragment {
             }
         });
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         announcementList = new ArrayList<>();
         adapter = new AnnouncementAdapter(announcementList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+            if (!admin) {
+                view.findViewById(R.id.createAnnouncement).setVisibility(View.GONE);
+                fetchAnnouncementsStudent();
+            } else{
+                fetchAnnouncementsAdmin();
+            }
 
-        if (!admin) {
-            view.findViewById(R.id.createAnnouncement).setVisibility(View.GONE);
-            fetchAnnouncementsStudent();
-        } else{
-            fetchAnnouncementsAdmin();
-        }
         return view;
     }
 
     private void fetchAnnouncementsAdmin() {
+        Handler handler = new Handler(Looper.getMainLooper());
+
         db.orderByChild("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    String announcers = Objects.requireNonNull(data.child("Announcer").getValue()).toString();
-                    String titles = Objects.requireNonNull(data.child("Title").getValue()).toString();
-                    String announcements = Objects.requireNonNull(data.child("Content").getValue()).toString();
-                    String dates = Objects.requireNonNull(data.child("Date").getValue()).toString();
-                    String eventTitles = Objects.requireNonNull(data.child("EventTitle").getValue()).toString();
-                    boolean isEvent = (boolean) data.child("isEvent").getValue();
-                    Announcement announcement = new Announcement();
-                    announcement.setAnnouncer("Announcer: " + announcers);
-                    announcement.setTitle("Title: " + titles);
-                    announcement.setContent("Announcement: " + announcements);
-                    announcement.setDate("Date: " + dates);
-                    announcement.setEventTitle("Event: " + eventTitles);
-                    announcement.setEvent(isEvent);
-                    announcementList.add(0, announcement);
+                        String announcers = Objects.requireNonNull(data.child("Announcer").getValue()).toString();
+                        String announcements = Objects.requireNonNull(data.child("Content").getValue()).toString();
+                        String titles = Objects.requireNonNull(data.child("Title").getValue()).toString();
+                        String dates = Objects.requireNonNull(data.child("Date").getValue()).toString();
+                        String eventTitles = Objects.requireNonNull(data.child("EventTitle").getValue()).toString();
+                        boolean isEvent = (boolean) data.child("isEvent").getValue();
+                        Announcement announcement = new Announcement();
+                        announcement.setAnnouncer("Announcer: " + announcers);
+                        announcement.setTitle("Title: " + titles);
+                        announcement.setContent("Announcement: " + announcements);
+                        announcement.setDate("Date: " + dates);
+                        announcement.setEventTitle("Event: " + eventTitles);
+                        announcement.setEvent(isEvent);
+                        announcementList.add(0, announcement);
                 }
 
                 adapter.notifyDataSetChanged();
