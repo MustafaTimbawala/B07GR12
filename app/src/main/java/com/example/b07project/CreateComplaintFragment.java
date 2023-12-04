@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class CreateComplaintFragment extends Fragment {
 
@@ -80,36 +82,37 @@ public class CreateComplaintFragment extends Fragment {
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    int id=0;
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            id++;
+                String title = compTitle.getText().toString();
+                String content = compInput.getText().toString();
+                if(content.replaceAll("\\s+", "").equals("") || title.replaceAll("\\s+", "").equals("")){
+                    Toast.makeText(getContext(), "Fields cannot be empty.", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        int id=0;
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot child : snapshot.getChildren()) {
+                                id++;
+                            }
+
+                            {
+                                myRef.child("" + (id+1)).child("Title").setValue(title);
+                                myRef.child("" + (id+1)).child("Content").setValue(content);
+                                myRef.child("" + (id+1)).child("Date").setValue(finalMyObj.toString());
+                                myRef.child("" + (id+1)).child("ID").setValue(id + 1);
+                                myRef.child("" + (id+1 )).child("Name").setValue(username);
+
+                            }
                         }
-                        String title = compTitle.getText().toString();
-                        String content = compInput.getText().toString();
 
-                        if(content.replaceAll("\\s+", "").equals("") || title.replaceAll("\\s+", "").equals("")){
-                            Snackbar.make(view, "Fields cannot be empty", Snackbar.LENGTH_LONG)
-                                    .setAnchorView(R.id.button_first)
-                                    .setAction("Action", null).show();
-                        }
-                        else {
-                            myRef.child("" + (id+1)).child("Title").setValue(title);
-                            myRef.child("" + (id+1)).child("Content").setValue(content);
-                            myRef.child("" + (id+1)).child("Date").setValue(finalMyObj.toString());
-                            myRef.child("" + (id+1)).child("ID").setValue(id + 1);
-                            myRef.child("" + (id+1 )).child("Name").setValue(username);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                    }
+                    });
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
                 //nav back to complaints page
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -120,5 +123,4 @@ public class CreateComplaintFragment extends Fragment {
         });
         return view;
     }
-
 }
