@@ -79,6 +79,12 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         holder.eventTitleText.setText(event.getTitle());
         holder.eventDateText.setText(event.getDate().toString());
         holder.eventDescriptionText.setText(event.getDescription());
+
+        //fixes bug with buttons disappearing
+        holder.mainButton.setVisibility(View.VISIBLE);
+        holder.deleteEventButton.setVisibility(View.VISIBLE);
+        holder.eventPassed.setVisibility(View.VISIBLE);
+
         if (admin) {
             holder.eventPassed.setVisibility(View.GONE);
             if (event.getDate().compareTo(DateTime.now()) > 0) { //event is in the future

@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.signOutButton) {
                     // Sign out logic
-                    Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
+                    Intent intent = new Intent(HomeActivity.this, SignInActivityView.class);
                     startActivity(intent);
                     finish(); // Finish the current activity
                     return true;
