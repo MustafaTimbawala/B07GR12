@@ -206,7 +206,7 @@ public class ViewAnnouncementFragment extends Fragment {
                     int minute = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("minute").getValue()).toString());
 
                     DateTime eventDate = new DateTime(year, month, day, hour, minute);
-                    if(date.compareTo(eventDate) < 0) {
+                    if(date.compareTo(eventDate) < 0) { // if date < eventDate then Date hasn't passed
                         Announcement eventAnnouncement = new Announcement();
                         eventAnnouncement.setEventTitle("Event: " + eventTitle);
                         eventAnnouncement.setEvent(true);
