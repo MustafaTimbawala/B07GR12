@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -47,7 +46,7 @@ public class SignUpActivity extends AppCompatActivity {
         User user = new User(hashedPassword, admin);
         db.child("Users").child(username).setValue(user);
         Toast.makeText(this, "Account successfully created!", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this, SignInActivity.class);
+        Intent intent = new Intent(this, SignInActivityView.class);
         startActivity(intent);
     }
 
@@ -80,7 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void onClickSignIn(View signInButton) {
-        Intent intent = new Intent(this, SignInActivity.class);
+        Intent intent = new Intent(this, SignInActivityView.class);
         startActivity(intent);
     }
 
