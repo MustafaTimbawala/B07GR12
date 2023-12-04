@@ -9,33 +9,46 @@
     android:padding="4dp"> <!-- Add margin to the bottom -->
 
     <TextView
+        android:id="@+id/title"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/eventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
         tools:text="eventTitle" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Title" />
 
     <TextView
         android:id="@+id/announcer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Announcer" />
+        android:text="Announcer"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date of Announcement" />
+        android:text="Date of Announcement"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/announcement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Announcement" />
+        android:text="Announcement"
+        android:textStyle="bold" />
 
 </LinearLayout>
