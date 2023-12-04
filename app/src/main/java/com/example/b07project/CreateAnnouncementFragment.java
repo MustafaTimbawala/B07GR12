@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -96,15 +97,16 @@ public class CreateAnnouncementFragment extends Fragment {
         view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String title = announceTitle.getText().toString();
-                String content = announceInput.getText().toString();
                 if (eventSwitch.isChecked()) {
+                    String title = announceTitle.getText().toString();
+                    String content = announceInput.getText().toString();
                     String eventName = eventNameInput.getText().toString();
                     if (eventName.replaceAll("\\s+", "").equals("") || title.replaceAll("\\s+", "").equals("") || content.replaceAll("\\s+", "").equals("")) {
                         Toast.makeText(getContext(), "Fields cannot be empty.", Toast.LENGTH_LONG).show();
                     } else {
                         eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             boolean eventOccur = false;
+
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for (DataSnapshot child1 : snapshot.getChildren()) {
@@ -112,16 +114,18 @@ public class CreateAnnouncementFragment extends Fragment {
                                         eventOccur = true;
                                     }
                                 }
-                                if (!eventOccur){
+                                if (!eventOccur) {
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
                                             updateUIWithData(view, "Event does not exist.");
                                         }
                                     });
-                                }
-                                else {
+                                } else {
                                     announceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        String title1 = announceTitle.getText().toString();
+                                        String content1 = announceInput.getText().toString();
+                                        String eventName1 = eventNameInput.getText().toString();
                                         int id = 0;
 
                                         @Override
@@ -130,16 +134,16 @@ public class CreateAnnouncementFragment extends Fragment {
                                                 id++;
                                             }
 
-                                            boolean isEvent = true;
-                                            String id1 = Integer.toString(id + 1);
-                                            announceRef.child(id1).child("Announcer").setValue(username);
-                                            announceRef.child(id1).child("Content").setValue(content);
-                                            announceRef.child(id1).child("Date").setValue(finalMyObj.toString());
-                                            announceRef.child(id1).child("EventTitle").setValue(eventName);
-                                            announceRef.child(id1).child("ID").setValue(id + 1);
-                                            announceRef.child(id1).child("Title").setValue(title);
-                                            announceRef.child(id1).child("isEvent").setValue(isEvent);
-
+                                            {
+                                                boolean isEvent = true;
+                                                announceRef.child("" + (id + 1)).child("Announcer").setValue(username);
+                                                announceRef.child("" + (id + 1)).child("Content").setValue(content1);
+                                                announceRef.child("" + (id + 1)).child("Date").setValue(finalMyObj.toString());
+                                                announceRef.child("" + (id + 1)).child("EventTitle").setValue(eventName1);
+                                                announceRef.child("" + (id + 1)).child("ID").setValue(id + 1);
+                                                announceRef.child("" + (id + 1)).child("Title").setValue(title1);
+                                                announceRef.child("" + (id + 1)).child("isEvent").setValue(isEvent);
+                                            }
                                         }
 
                                         @Override
@@ -149,35 +153,6 @@ public class CreateAnnouncementFragment extends Fragment {
                                     });
                                 }
                             }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }});
-                    }
-                }
-                else{
-                    if(title.replaceAll("\\s+", "").equals("") || content.replaceAll("\\s+", "").equals("")) {
-                        Toast.makeText(getContext(), "Fields cannot be empty", Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        announceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            int id=0;
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot child: snapshot.getChildren()){
-                                    id++;
-                                }
-                                boolean isEvent = false;
-                                String id1 = Integer.toString(id + 1);
-
-                                announceRef.child(id1).child("Announcer").setValue(username);
-                                announceRef.child(id1).child("Content").setValue(content);
-                                announceRef.child(id1).child("Date").setValue(finalMyObj.toString());
-                                announceRef.child(id1).child("EventTitle").setValue("");
-                                announceRef.child(id1).child("ID").setValue(id+1);
-                                announceRef.child(id1).child("Title").setValue(title);
-                                announceRef.child(id1).child("isEvent").setValue(isEvent);
-                            }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
@@ -185,8 +160,55 @@ public class CreateAnnouncementFragment extends Fragment {
                             }
                         });
                     }
+                } else {
+                        String title = announceTitle.getText().toString();
+                        String content = announceInput.getText().toString();
+                        if (content.replaceAll("\\s+", "").equals("") || title.replaceAll("\\s+", "").equals("")) {
+                            Toast.makeText(getContext(), "Fields cannot be empty.", Toast.LENGTH_LONG).show();
+                        } else {
+                            announceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                String title1 = announceTitle.getText().toString();
+                                String content1 = announceInput.getText().toString();
+                                int id = 0;
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot child : snapshot.getChildren()) {
+                                        id++;
+                                    }
+
+                                    {
+                                        boolean isEvent = false;
+                                        announceRef.child("" + (id + 1)).child("Title").setValue(title1);
+                                        announceRef.child("" + (id + 1)).child("Content").setValue(content1);
+                                        announceRef.child("" + (id + 1)).child("EventTitle").setValue("");
+                                        announceRef.child("" + (id + 1)).child("isEvent").setValue(isEvent);
+                                        announceRef.child("" + (id + 1)).child("Date").setValue(finalMyObj.toString());
+                                        announceRef.child("" + (id + 1)).child("ID").setValue(id + 1);
+                                        announceRef.child("" + (id + 1)).child("Announcer").setValue(username);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
+                        fragmentTransaction.commit();
+                    }
                 }
 
+        });
+
+        ((Button)view.findViewById(R.id.Previous)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
@@ -195,15 +217,15 @@ public class CreateAnnouncementFragment extends Fragment {
         });
 
         ((Switch)view.findViewById(R.id.eventSwitch)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            EditText eventName = (EditText) view.findViewById(R.id.eventName);
+            EditText eventName5 = (EditText) view.findViewById(R.id.eventName);
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    eventName.setFocusableInTouchMode(true);
+                    eventName5.setFocusableInTouchMode(true);
                 }
                 else {
-                    eventName.setFocusable(false);
-                    eventName.setText("");
+                    eventName5.setFocusable(false);
+                    eventName5.setText("");
                 }
             }
 
