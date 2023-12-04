@@ -113,8 +113,8 @@ public class ViewAnnouncementFragment extends Fragment {
                         boolean isEvent = (boolean) data.child("isEvent").getValue();
                         Announcement announcement = new Announcement();
                         announcement.setAnnouncer("Announcer: " + announcers);
-                        announcement.setTitle("Title: " + titles);
-                        announcement.setContent("Announcement: " + announcements);
+                        announcement.setTitle(titles);
+                        announcement.setContent(announcements);
                         announcement.setDate("Date: " + dates);
                         announcement.setEventTitle("Event: " + eventTitles);
                         announcement.setEvent(isEvent);
