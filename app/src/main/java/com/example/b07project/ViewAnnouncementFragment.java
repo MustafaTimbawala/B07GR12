@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +32,11 @@ public class ViewAnnouncementFragment extends Fragment {
     private String username;
     private boolean admin;
     private DatabaseReference db;
+    private DatabaseReference scheduledEvents;
     private List<Announcement> announcementList;
     private AnnouncementAdapter adapter;
+
+    private DateTime date;
 
     public ViewAnnouncementFragment() {} //Required empty public constructor
 
@@ -54,6 +58,8 @@ public class ViewAnnouncementFragment extends Fragment {
             admin = args.getBoolean(ARG_ADMIN);
         }
         db = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference("Announcements");
+        scheduledEvents = FirebaseDatabase.getInstance(getString(R.string.database_link)).getReference("Events");
+
 
     }
 
@@ -118,6 +124,38 @@ public class ViewAnnouncementFragment extends Fragment {
                 Log.e("Firebase", "Error fetching announcements: " + error.getMessage());
             }
         });
+        scheduledEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    date = date.now();
+                    String eventTitle = Objects.requireNonNull(eventSnapshot.child("title").getValue()).toString();
+                    int year = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("year").getValue()).toString());
+                    int month = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("month").getValue()).toString());
+                    int day = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("day").getValue()).toString());
+                    int hour = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("hour").getValue()).toString());
+                    int minute = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("minute").getValue()).toString());
+
+                    DateTime eventDate = new DateTime(year, month, day, hour, minute);
+                    if(date.compareTo(eventDate) < 0) {
+                        Announcement eventAnnouncement = new Announcement();
+                        eventAnnouncement.setEventTitle("Event: " + eventTitle);
+                        eventAnnouncement.setEvent(true);
+                        eventAnnouncement.setDate("Date: " + eventDate.toString());
+                        eventAnnouncement.setContent(eventTitle + " has been scheduled" +
+                                ", head over to Events to check it out!");
+                        eventAnnouncement.setTitle("New Event");
+                        announcementList.add(0, eventAnnouncement);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Error fetching scheduled events: " + error.getMessage());
+            }
+        });
     }
 
     private void fetchAnnouncementsStudent() {
@@ -142,8 +180,7 @@ public class ViewAnnouncementFragment extends Fragment {
 
                     if (!isEvent) {
                         announcementList.add(0, announcement);
-                    }
-                    else {
+                    } else {
                         checkUserInEvent(announcement);
                     }
                     adapter.notifyDataSetChanged();
@@ -153,6 +190,38 @@ public class ViewAnnouncementFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Firebase", "Error fetching announcements: " + error.getMessage());
+            }
+        });
+
+        scheduledEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    date = date.now();
+                    String eventTitle = Objects.requireNonNull(eventSnapshot.child("title").getValue()).toString();
+                    int year = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("year").getValue()).toString());
+                    int month = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("month").getValue()).toString());
+                    int day = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("day").getValue()).toString());
+                    int hour = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("hour").getValue()).toString());
+                    int minute = Integer.parseInt(Objects.requireNonNull(eventSnapshot.child("date").child("minute").getValue()).toString());
+
+                    DateTime eventDate = new DateTime(year, month, day, hour, minute);
+                    if(date.compareTo(eventDate) < 0) {
+                        Announcement eventAnnouncement = new Announcement();
+                        eventAnnouncement.setEventTitle("Event: " + eventTitle);
+                        eventAnnouncement.setEvent(true);
+                        eventAnnouncement.setDate("Date: " + eventDate.toString());
+                        eventAnnouncement.setContent(eventTitle + " has been scheduled" +
+                                ", head over to Events to check it out!");
+                        eventAnnouncement.setTitle("New Event");
+                        announcementList.add(0, eventAnnouncement);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Error fetching scheduled events: " + error.getMessage());
             }
         });
     }
