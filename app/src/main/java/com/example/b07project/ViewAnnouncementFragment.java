@@ -104,21 +104,24 @@ public class ViewAnnouncementFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
+
                 for (DataSnapshot data : snapshot.getChildren()) {
-                        String announcers = Objects.requireNonNull(data.child("Announcer").getValue()).toString();
-                        String announcements = Objects.requireNonNull(data.child("Content").getValue()).toString();
-                        String titles = Objects.requireNonNull(data.child("Title").getValue()).toString();
-                        String dates = Objects.requireNonNull(data.child("Date").getValue()).toString();
-                        String eventTitles = Objects.requireNonNull(data.child("EventTitle").getValue()).toString();
-                        boolean isEvent = (boolean) data.child("isEvent").getValue();
-                        Announcement announcement = new Announcement();
-                        announcement.setAnnouncer("Announcer: " + announcers);
-                        announcement.setTitle(titles);
-                        announcement.setContent(announcements);
-                        announcement.setDate("Date: " + dates);
-                        announcement.setEventTitle("Event: " + eventTitles);
-                        announcement.setEvent(isEvent);
+                    String announcers = data.child("Announcer").getValue() != null ? data.child("Announcer").getValue().toString() : "";
+                    String announcements = data.child("Content").getValue() != null ? data.child("Content").getValue().toString() : "";
+                    String titles = data.child("Title").getValue() != null ? data.child("Title").getValue().toString() : "";
+                    String dates = data.child("Date").getValue() != null ? data.child("Date").getValue().toString() : "";
+                    String eventTitles = data.child("EventTitle").getValue() != null ? data.child("EventTitle").getValue().toString() : "";
+                    boolean isEvent = data.child("isEvent").getValue() != null && (boolean) data.child("isEvent").getValue();
+                    Announcement announcement = new Announcement();
+                    announcement.setAnnouncer("Announcer: " + announcers);
+                    announcement.setTitle(titles);
+                    announcement.setContent(announcements);
+                    announcement.setDate("Date: " + dates);
+                    announcement.setEventTitle("Event: " + eventTitles);
+                    announcement.setEvent(isEvent);
+                    synchronized (announcementList) {
                         announcementList.add(0, announcement);
+                    }
                 }
 
                 adapter.notifyDataSetChanged();
@@ -150,8 +153,9 @@ public class ViewAnnouncementFragment extends Fragment {
                         eventAnnouncement.setContent(eventTitle + " has been scheduled" +
                                 ", head over to Events to check it out!");
                         eventAnnouncement.setTitle("New Event");
-                        announcementList.add(0, eventAnnouncement);
-                    }
+                        synchronized (announcementList) {
+                            announcementList.add(0, eventAnnouncement);
+                        }                    }
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -184,8 +188,9 @@ public class ViewAnnouncementFragment extends Fragment {
                     announcement.setEvent(isEvent);
 
                     if (!isEvent) {
-                        announcementList.add(0, announcement);
-                    } else {
+                        synchronized (announcementList) {
+                            announcementList.add(0, announcement);
+                        }                    } else {
                         checkUserInEvent(announcement);
                     }
                     adapter.notifyDataSetChanged();
@@ -219,8 +224,9 @@ public class ViewAnnouncementFragment extends Fragment {
                         eventAnnouncement.setContent(eventTitle + " has been scheduled" +
                                 ", head over to Events to check it out!");
                         eventAnnouncement.setTitle("New Event");
-                        announcementList.add(0, eventAnnouncement);
-                    }
+                        synchronized (announcementList) {
+                            announcementList.add(0, eventAnnouncement);
+                        }                    }
                 }
                 adapter.notifyDataSetChanged();
             }
