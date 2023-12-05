@@ -12,13 +12,13 @@ public class SignInActivityModel {
 
     final static String databaseLink = "https://b07project-e501d-default-rtdb.firebaseio.com/";
     DatabaseReference db;
-    SignInActivityPresenter presenter;
-    public SignInActivityModel(SignInActivityPresenter presenter) {
+    //SignInActivityPresenter presenter;
+    public SignInActivityModel() {
         this.db = FirebaseDatabase.getInstance(databaseLink).getReference();
-        this.presenter = presenter;
+        //this.presenter = presenter;
     }
 
-    public void queryUsernameAndPassword(String username, String password) {
+    public void queryUsernameAndPassword(String username, String password, SignInActivityPresenter presenter) {
         db.child("Users").child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {

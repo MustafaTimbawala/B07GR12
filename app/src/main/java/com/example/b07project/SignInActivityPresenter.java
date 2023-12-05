@@ -9,9 +9,10 @@ public class SignInActivityPresenter {
     SignInActivityView view;
     SignInActivityModel model;
 
-    public SignInActivityPresenter(SignInActivityView view) {
+    public SignInActivityPresenter(SignInActivityView view, SignInActivityModel model) {
         this.view = view;
-        this.model = new SignInActivityModel(this);
+        //this.model = new SignInActivityModel(this);
+        this.model = model;
     }
 
     public void signUpClicked() {
@@ -19,9 +20,9 @@ public class SignInActivityPresenter {
     }
 
     public void signInClicked() {
-        String username = view.usernameTextBox.getText().toString();
-        String password = view.passwordTextBox.getText().toString();
-        model.queryUsernameAndPassword(username, password);
+        String username = view.getUsername();
+        String password = view.getPassword();
+        model.queryUsernameAndPassword(username, password, this);
     }
 
     public void checkUsernameAndPassword(String username, String password, User user) {

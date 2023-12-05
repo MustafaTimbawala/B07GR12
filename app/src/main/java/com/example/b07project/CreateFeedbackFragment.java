@@ -2,9 +2,8 @@ package com.example.b07project;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,29 +66,35 @@ public class CreateFeedbackFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_feedback, container, false);
 
-        //Placeholder
         TextView textView = view.findViewById(R.id.commentsID);
 
         // This is to slightly change the functionality of the ratingbar
         RatingBar feedBackBar = view.findViewById(R.id.feedBackBar);
-        feedBackBar.setRating(0f);// this is the deafult and if left like this is not counted as a rating
+        // this sets the default rating to 0and if left like this is not counted as a rating
+        feedBackBar.setRating(0f);
         feedBackBar.setStepSize(0.5f);
 
 
-
         Button submitbutton = view.findViewById(R.id.submitFeed);
+        // This is to handle the submit click
         submitbutton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View submitbutton) {
+                // THese take the values from the rating and the comments
                 RatingBar feedBackBar = view.findViewById(R.id.feedBackBar);
                 float rating  =  feedBackBar.getRating();
                 EditText commented= view.findViewById(R.id.commentBox);
                 String comment = commented.getText().toString();
+                if (comment.length()==0){comment = null;}
+
+                // This creates an instance of feedback
                 Feedback feedback=  new Feedback(comment, rating);
+
                 if (comment.length()==0 && rating ==0){
-                    //throw an error that the need to enter somesort of feedbackv
+                    //throws a toast to enter some sort of feedback
                     Toast.makeText( getActivity(),"Please enter a rating and/or a commment", Toast.LENGTH_LONG).show();
                 }
+                // This writes a query looking for a user in an event to check if the user already made a comment or not
                 Query query = db.child("Feedback").child(Integer.toString(eventID)).child(username);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -97,8 +102,8 @@ public class CreateFeedbackFragment extends Fragment{
                         if (dataSnapshot.exists()) {
                             Toast.makeText(getActivity(), "You already commented", Toast.LENGTH_LONG).show();
                         } else {
-                            // The child at the specified path does not exist
-                            // Handle the case where the child does not exist
+                            // This handles the case where the child does not exist
+                            //It makes the path in the database
                             db.child("Feedback").child((Integer.toString(eventID))).child(username).setValue(feedback);
                             Toast.makeText(getActivity(), "Feedback was succeccesful", Toast.LENGTH_LONG).show();
 
@@ -107,7 +112,6 @@ public class CreateFeedbackFragment extends Fragment{
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         // This method is called in case of an error
-                        // Handle the error here
                         Toast.makeText(getActivity(), "Something went wrong in the database", Toast.LENGTH_LONG).show();
                     }
                 });

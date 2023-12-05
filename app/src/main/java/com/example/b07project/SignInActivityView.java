@@ -19,7 +19,7 @@ public class SignInActivityView extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         usernameTextBox = findViewById(R.id.usernameTextBox);
         passwordTextBox = findViewById(R.id.passwordTextBox);
-        presenter = new SignInActivityPresenter(this);
+        presenter = new SignInActivityPresenter(this, new SignInActivityModel());
     }
 
     public void showToast(String message) {
@@ -45,6 +45,10 @@ public class SignInActivityView extends AppCompatActivity {
     public void onClickSignUp(View signUpButton) {
         presenter.signUpClicked();
     }
+
+    public String getPassword(){return passwordTextBox.getText().toString();}
+
+    public String getUsername(){return usernameTextBox.getText().toString();}
 
 }
 
