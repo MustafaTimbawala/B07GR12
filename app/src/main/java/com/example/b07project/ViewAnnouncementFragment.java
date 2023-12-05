@@ -173,12 +173,12 @@ public class ViewAnnouncementFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 announcementList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    String announcers = Objects.requireNonNull(data.child("Announcer").getValue()).toString();
-                    String titles = Objects.requireNonNull(data.child("Title").getValue()).toString();
-                    String announcements = Objects.requireNonNull(data.child("Content").getValue()).toString();
-                    String dates = Objects.requireNonNull(data.child("Date").getValue()).toString();
-                    String eventTitles = Objects.requireNonNull(data.child("EventTitle").getValue()).toString();
-                    boolean isEvent = (boolean) data.child("isEvent").getValue();
+                    String announcers = data.child("Announcer").getValue() != null ? data.child("Announcer").getValue().toString() : "";
+                    String announcements = data.child("Content").getValue() != null ? data.child("Content").getValue().toString() : "";
+                    String titles = data.child("Title").getValue() != null ? data.child("Title").getValue().toString() : "";
+                    String dates = data.child("Date").getValue() != null ? data.child("Date").getValue().toString() : "";
+                    String eventTitles = data.child("EventTitle").getValue() != null ? data.child("EventTitle").getValue().toString() : "";
+                    boolean isEvent = data.child("isEvent").getValue() != null && (boolean) data.child("isEvent").getValue();
                     Announcement announcement = new Announcement();
                     announcement.setAnnouncer("Announcer: " + announcers);
                     announcement.setTitle("Title: " + titles);

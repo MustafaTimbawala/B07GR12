@@ -197,11 +197,11 @@ public class CreateAnnouncementFragment extends Fragment {
                             });
                         }
 
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
-                        fragmentTransaction.commit();
                     }
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.mainFragment, ViewAnnouncementFragment.newInstance(username, admin));
+                fragmentTransaction.commit();
                 }
 
         });
